@@ -22,7 +22,7 @@ export default function PatientsPage() {
         }
       />
 
-      <div className="grid grid-cols-1 gap-5 px-8 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 px-4 sm:px-6 lg:px-8 sm:grid-cols-2 xl:grid-cols-3">
         {patients.map((p) => (
           <div key={p.id} className="card flex flex-col gap-4 p-5">
             <div className="flex items-center gap-3">

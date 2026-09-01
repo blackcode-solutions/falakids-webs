@@ -40,8 +40,8 @@ export default function SessionBuilderPage() {
     return (
       <div className="pb-10">
         <Topbar title="Tarefas" backHref="/sessions/new" />
-        <div className="mx-auto max-w-xl px-8 pt-6 text-center">
-          <div className="card p-10">
+        <div className="mx-auto max-w-xl px-4 sm:px-6 lg:px-8 pt-6 text-center">
+          <div className="card p-6 sm:p-10">
             <div className="mx-auto mb-2 flex h-24 w-24 items-center justify-center">
               <Parrot className="h-24 w-24" />
             </div>
@@ -52,7 +52,7 @@ export default function SessionBuilderPage() {
               Deseja transformar esta sessão em tarefa para casa?
             </p>
 
-            <div className="mt-6 grid grid-cols-3 gap-3 rounded-2xl bg-[#F7F8FD] p-4 text-left text-sm">
+            <div className="mt-6 grid grid-cols-1 gap-3 rounded-2xl bg-[#F7F8FD] p-4 text-left text-sm sm:grid-cols-3">
               <div>
                 <p className="text-xs font-semibold text-[var(--muted)]">Paciente</p>
                 <p className="font-bold">{patient.name}</p>
@@ -121,7 +121,7 @@ export default function SessionBuilderPage() {
         }
       />
 
-      <div className="grid grid-cols-1 gap-6 px-8 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 px-4 sm:px-6 lg:px-8 lg:grid-cols-3">
         <section className="card p-5">
           <StepHeader n={1} title="Selecionar Paciente" />
           <select

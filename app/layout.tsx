@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Baloo_2, Inter } from "next/font/google";
 import "./globals.css";
 
@@ -17,6 +17,12 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "FalaKids | Plataforma de Fonoaudiologia",
   description: "Acompanhe sessões, biblioteca de atividades, tarefas e evolução dos pacientes com a FalaKids.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#F6F8FC",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

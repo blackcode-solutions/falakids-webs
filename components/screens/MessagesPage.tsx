@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Topbar from "@/components/Topbar";
-import { SearchIcon, SendIcon, HeartIcon } from "@/components/icons";
+import { SearchIcon, SendIcon, HeartIcon, ChevronLeftIcon } from "@/components/icons";
 import KidAvatar from "@/components/KidAvatar";
 import { messages, patients } from "@/lib/data";
 
@@ -30,6 +30,7 @@ const THREADS: Record<string, ChatMessage[]> = {
 export default function MessagesPage() {
   const [activeId, setActiveId] = useState(messages[0].id);
   const [draft, setDraft] = useState("");
+  const [mobileView, setMobileView] = useState<"list" | "chat">("list");
   const active = messages.find((m) => m.id === activeId)!;
   const patient = patients.find((p) => p.id === active.relation);
   const thread = THREADS[activeId] ?? [];
@@ -38,8 +39,14 @@ export default function MessagesPage() {
     <div className="pb-10">
       <Topbar title="Mensagens" />
 
-      <div className="grid grid-cols-1 gap-0 overflow-hidden rounded-3xl border border-[var(--panel-border)] bg-white mx-8 lg:grid-cols-[300px_1fr]" style={{ height: "calc(100vh - 160px)" }}>
-        <aside className="flex flex-col border-r border-[var(--panel-border)]">
+      <div
+        className="grid grid-cols-1 gap-0 overflow-hidden rounded-3xl border border-[var(--panel-border)] bg-white mx-4 h-[75vh] sm:mx-6 lg:mx-8 lg:h-[calc(100vh-160px)] lg:grid-cols-[300px_1fr]"
+      >
+        <aside
+          className={`flex-col border-r border-[var(--panel-border)] ${
+            mobileView === "list" ? "flex" : "hidden"
+          } lg:flex`}
+        >
           <div className="p-4">
             <div className="flex items-center gap-2 rounded-full border border-[var(--panel-border)] bg-[#F7F8FD] px-4 py-2 text-sm text-[var(--muted)]">
               <SearchIcon className="h-4 w-4" />
@@ -53,12 +60,15 @@ export default function MessagesPage() {
             {messages.map((m) => (
               <button
                 key={m.id}
-                onClick={() => setActiveId(m.id)}
+                onClick={() => {
+                  setActiveId(m.id);
+                  setMobileView("chat");
+                }}
                 className={`focus-ring flex w-full items-start gap-3 px-4 py-3 text-left transition-colors ${
                   activeId === m.id ? "bg-[var(--wash-blue)]" : "hover:bg-[#F7F8FD]"
                 }`}
               >
-<KidAvatar seed={m.id} className="h-11 w-11" />
+                <KidAvatar seed={m.id} className="h-11 w-11 shrink-0" />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
                     <p className="truncate text-sm font-bold">{m.name}</p>
@@ -72,19 +82,26 @@ export default function MessagesPage() {
           </div>
         </aside>
 
-        <section className="flex flex-col">
-          <div className="flex items-center justify-between border-b border-[var(--panel-border)] px-6 py-4">
-            <div>
-              <p className="text-sm font-bold">{active.name}</p>
-              <p className="text-xs text-[var(--muted)]">{patient ? `Responsável de ${patient.name}` : ""}</p>
+        <section className={`flex-col ${mobileView === "chat" ? "flex" : "hidden"} lg:flex`}>
+          <div className="flex items-center gap-2 border-b border-[var(--panel-border)] px-3 py-3 sm:px-6 sm:py-4">
+            <button
+              onClick={() => setMobileView("list")}
+              aria-label="Voltar para conversas"
+              className="focus-ring flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[var(--muted)] hover:bg-[#F2F4FB] lg:hidden"
+            >
+              <ChevronLeftIcon className="h-5 w-5" />
+            </button>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-bold">{active.name}</p>
+              <p className="truncate text-xs text-[var(--muted)]">{patient ? `Responsável de ${patient.name}` : ""}</p>
             </div>
           </div>
 
-          <div className="flex-1 space-y-3 overflow-y-auto px-6 py-4">
+          <div className="flex-1 space-y-3 overflow-y-auto px-3 py-4 sm:px-6">
             {thread.map((msg) => (
               <div key={msg.id} className={`flex ${msg.from === "me" ? "justify-end" : "justify-start"}`}>
                 <div
-                  className={`max-w-sm rounded-2xl px-4 py-2.5 text-sm ${
+                  className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm sm:max-w-sm ${
                     msg.from === "me"
                       ? "rounded-br-sm bg-[var(--brand-blue)] text-white"
                       : "rounded-bl-sm bg-[#F2F4FB] text-[var(--foreground)]"
@@ -111,13 +128,13 @@ export default function MessagesPage() {
               e.preventDefault();
               setDraft("");
             }}
-            className="flex items-center gap-3 border-t border-[var(--panel-border)] px-6 py-4"
+            className="flex items-center gap-2 border-t border-[var(--panel-border)] px-3 py-3 sm:gap-3 sm:px-6 sm:py-4"
           >
             <input
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               placeholder="Digite sua mensagem..."
-              className="focus-ring flex-1 rounded-full border border-[var(--panel-border)] bg-[#F7F8FD] px-4 py-2.5 text-sm outline-none placeholder:text-[var(--muted)]"
+              className="focus-ring min-w-0 flex-1 rounded-full border border-[var(--panel-border)] bg-[#F7F8FD] px-4 py-2.5 text-sm outline-none placeholder:text-[var(--muted)]"
             />
             <button
               type="submit"

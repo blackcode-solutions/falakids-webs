@@ -37,7 +37,7 @@ export default function LibraryPage() {
         }
       />
 
-      <div className="grid grid-cols-1 gap-6 px-8 lg:grid-cols-[240px_1fr]">
+      <div className="grid grid-cols-1 gap-6 px-4 sm:px-6 lg:px-8 lg:grid-cols-[240px_1fr]">
         <aside className="card h-fit p-5">
           <div className="mb-5 flex items-center gap-2 text-sm font-extrabold">
             <FilterIcon className="h-4 w-4 text-[var(--muted)]" />

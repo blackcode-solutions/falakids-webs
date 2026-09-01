@@ -10,12 +10,12 @@ export default function GamificationPage() {
 
   return (
     <div className="pb-10">
-      <header className="flex items-center justify-between gap-4 px-8 py-6">
-        <h1 className="font-[family-name:var(--font-baloo)] text-2xl font-bold">Gamificação</h1>
-        <Parrot className="h-12 w-12" />
+      <header className="flex items-center justify-between gap-4 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
+        <h1 className="font-[family-name:var(--font-baloo)] text-xl font-bold sm:text-2xl">Gamificação</h1>
+        <Parrot className="hidden h-12 w-12 sm:block" />
       </header>
 
-      <div className="grid grid-cols-1 gap-6 px-8 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 px-4 sm:px-6 lg:px-8 sm:grid-cols-2">
         <div className="card flex items-center gap-4 p-6">
           <div
             className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full text-lg font-bold"
@@ -58,7 +58,7 @@ export default function GamificationPage() {
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-1 gap-6 px-8 xl:grid-cols-[1.6fr_1fr]">
+      <div className="mt-6 grid grid-cols-1 gap-6 px-4 sm:px-6 lg:px-8 xl:grid-cols-[1.6fr_1fr]">
         <div className="card p-6">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="font-[family-name:var(--font-baloo)] text-lg font-bold">Conquistas</h3>

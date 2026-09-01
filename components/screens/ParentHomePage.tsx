@@ -12,28 +12,28 @@ export default function ParentHomePage() {
 
   return (
     <div className="pb-10">
-      <header className="flex items-center justify-between gap-4 px-8 py-6">
-        <div>
-          <h1 className="font-[family-name:var(--font-baloo)] text-2xl font-bold">
+      <header className="flex flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
+        <div className="min-w-0">
+          <h1 className="truncate font-[family-name:var(--font-baloo)] text-xl font-bold sm:text-2xl">
             Olá, {parentFirstName}! 👋
           </h1>
           <p className="mt-1 text-sm text-[var(--muted)]">
             Acompanhe o progresso do {activePatient.name.split(" ")[0]}.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-3">
           <button
             aria-label="Notificações"
-            className="focus-ring relative flex h-10 w-10 items-center justify-center rounded-full border border-[var(--panel-border)] bg-white text-[var(--muted)]"
+            className="focus-ring relative flex h-9 w-9 items-center justify-center rounded-full border border-[var(--panel-border)] bg-white text-[var(--muted)] sm:h-10 sm:w-10"
           >
             <BellIcon className="h-[18px] w-[18px]" />
             <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[var(--brand-pink)]" />
           </button>
-          <Parrot className="h-12 w-12" />
+          <Parrot className="hidden h-12 w-12 sm:block" />
         </div>
       </header>
 
-      <div className="grid grid-cols-1 gap-6 px-8 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 px-4 sm:px-6 lg:px-8 lg:grid-cols-2">
         <div className="card p-6">
           <h3 className="mb-4 font-[family-name:var(--font-baloo)] text-lg font-bold">
             Tarefas Pendentes

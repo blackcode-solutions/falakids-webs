@@ -20,7 +20,7 @@ export default function DashboardPage() {
     <div className="pb-10">
       <Topbar title="Dashboard" />
 
-      <div className="px-8">
+      <div className="px-4 sm:px-6 lg:px-8">
         <div className="relative mb-6 overflow-hidden rounded-3xl bg-gradient-to-r from-[#EFEBFF] to-[#FDEFF5] p-8">
           <h2 className="font-[family-name:var(--font-baloo)] text-2xl font-bold text-[var(--foreground)]">
             Olá, {clinicName}! 👋

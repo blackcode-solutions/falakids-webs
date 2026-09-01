@@ -5,8 +5,8 @@ export default function ClinicPage() {
   return (
     <div className="pb-10">
       <Topbar title="Clínica" />
-      <div className="px-8">
-        <div className="card p-6">
+      <div className="px-4 sm:px-6 lg:px-8">
+        <div className="card p-4 sm:p-6">
           <h3 className="mb-4 font-[family-name:var(--font-baloo)] text-lg font-extrabold">
             Dados da clínica
           </h3>

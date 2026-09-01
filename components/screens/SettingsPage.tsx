@@ -12,33 +12,33 @@ export default function SettingsPage() {
   const [reminders, setReminders] = useState(true);
 
   return (
-    <div className="min-h-screen p-5 lg:p-8">
-      <header className="mb-7 flex items-center justify-between">
+    <div className="min-h-screen p-4 sm:p-5 lg:p-8">
+      <header className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm text-[var(--muted)]">Configurações</p>
-          <h1 className="mt-1 font-[family-name:var(--font-baloo)] text-3xl font-bold">Configurações</h1>
+          <h1 className="mt-1 font-[family-name:var(--font-baloo)] text-2xl font-bold sm:text-3xl">Configurações</h1>
           <p className="mt-1 text-sm text-[var(--muted)]">Personalize sua conta e as preferências da clínica.</p>
         </div>
-        <button onClick={() => setSaved(true)} className="rounded-xl bg-[var(--brand-blue)] px-5 py-3 text-sm font-semibold text-white shadow-sm hover:brightness-95">Salvar alterações</button>
+        <button onClick={() => setSaved(true)} className="self-start rounded-xl bg-[var(--brand-blue)] px-5 py-3 text-sm font-semibold text-white shadow-sm hover:brightness-95 sm:self-auto">Salvar alterações</button>
       </header>
 
       {saved && <div className="mb-5 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">Alterações salvas com sucesso.</div>}
 
       <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
-        <aside className="card h-fit p-3">
+        <aside className="card flex gap-1 overflow-x-auto p-3 lg:h-fit lg:flex-col lg:gap-0 lg:overflow-visible">
           {sections.map((item, i) => (
-            <button key={item} onClick={() => setActive(item)} className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-medium ${active === item ? "bg-[#EEF2FF] text-[var(--brand-blue)]" : "text-[var(--muted)] hover:bg-[#F7F8FC]"}`}>
-              {i === 0 ? <UserIcon className="h-5 w-5" /> : i === 2 ? <BellIcon className="h-5 w-5" /> : <SettingsIcon className="h-5 w-5" />}
+            <button key={item} onClick={() => setActive(item)} className={`flex w-full shrink-0 items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-medium ${active === item ? "bg-[#EEF2FF] text-[var(--brand-blue)]" : "text-[var(--muted)] hover:bg-[#F7F8FC]"}`}>
+              {i === 0 ? <UserIcon className="h-5 w-5 shrink-0" /> : i === 2 ? <BellIcon className="h-5 w-5 shrink-0" /> : <SettingsIcon className="h-5 w-5 shrink-0" />}
               {item}
             </button>
           ))}
         </aside>
 
-        <section className="card p-6 lg:p-8">
+        <section className="card p-4 sm:p-6 lg:p-8">
           {active === "Perfil" && <>
             <h2 className="font-[family-name:var(--font-baloo)] text-xl font-bold">Meu perfil</h2>
             <p className="mt-1 text-sm text-[var(--muted)]">Informações exibidas para os responsáveis.</p>
-            <div className="mt-7 flex items-center gap-5 border-b border-[var(--panel-border)] pb-7">
+            <div className="mt-7 flex flex-wrap items-center gap-5 border-b border-[var(--panel-border)] pb-7">
               <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#EEE8FF] text-2xl font-bold text-[var(--brand-purple)]">A</div>
               <div><p className="font-semibold">Dra. Amanda</p><p className="text-sm text-[var(--muted)]">Fonoaudióloga</p><button className="mt-2 text-sm font-semibold text-[var(--brand-blue)]">Alterar foto</button></div>
             </div>
@@ -72,4 +72,4 @@ export default function SettingsPage() {
 }
 
 function FormGrid({ fields }: { fields: string[][] }) { return <div className="mt-7 grid gap-5 md:grid-cols-2">{fields.map(([label, value]) => <div key={label}><label className="text-sm font-semibold">{label}</label><input className="input mt-2" defaultValue={value} /></div>)}</div>; }
-function ToggleRow({ title, description, value, onChange }: { title: string; description: string; value: boolean; onChange: (v: boolean) => void }) { return <div className="mt-5 flex items-center justify-between rounded-2xl border border-[var(--panel-border)] p-5"><div><p className="font-semibold">{title}</p><p className="mt-1 text-sm text-[var(--muted)]">{description}</p></div><button onClick={() => onChange(!value)} className={`relative h-7 w-12 rounded-full transition ${value ? "bg-[var(--brand-green)]" : "bg-[#D9DEEA]"}`}><span className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition ${value ? "left-6" : "left-1"}`} /></button></div>; }
+function ToggleRow({ title, description, value, onChange }: { title: string; description: string; value: boolean; onChange: (v: boolean) => void }) { return <div className="mt-5 flex items-center justify-between gap-4 rounded-2xl border border-[var(--panel-border)] p-4 sm:p-5"><div className="min-w-0"><p className="font-semibold">{title}</p><p className="mt-1 text-sm text-[var(--muted)]">{description}</p></div><button onClick={() => onChange(!value)} className={`relative h-7 w-12 shrink-0 rounded-full transition ${value ? "bg-[var(--brand-green)]" : "bg-[#D9DEEA]"}`}><span className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition ${value ? "left-6" : "left-1"}`} /></button></div>; }

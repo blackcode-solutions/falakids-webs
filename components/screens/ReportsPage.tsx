@@ -25,7 +25,7 @@ export default function ReportsPage() {
         }
       />
 
-      <div className="px-8">
+      <div className="px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
           <label className="text-xs font-semibold text-[var(--muted)]">Paciente</label>
           <select
@@ -42,7 +42,7 @@ export default function ReportsPage() {
         </div>
 
         <div className="mb-6 grid grid-cols-1 gap-6 xl:grid-cols-[1.6fr_1fr]">
-          <div className="card p-6">
+          <div className="card p-4 sm:p-6">
             <h3 className="mb-1 font-[family-name:var(--font-baloo)] text-lg font-extrabold">
               Evolução do Fonema R
             </h3>
@@ -50,7 +50,7 @@ export default function ReportsPage() {
             <BarChart data={monthlyEvolution.map((m) => ({ label: m.month, value: m.value }))} />
           </div>
 
-          <div className="card flex flex-col items-center justify-center gap-3 p-6">
+          <div className="card flex flex-col items-center justify-center gap-3 p-4 sm:p-6">
             <div className="relative flex h-32 w-32 items-center justify-center">
               <svg viewBox="0 0 110 110" className="h-32 w-32 -rotate-90">
                 <circle cx="55" cy="55" r={radius} fill="none" stroke="#EEF0F8" strokeWidth="10" />
@@ -98,8 +98,8 @@ function StatCard({
   bg: string;
 }) {
   return (
-    <div className="rounded-[22px] p-5" style={{ background: bg }}>
-      <p className="font-[family-name:var(--font-baloo)] text-2xl font-extrabold" style={{ color }}>
+    <div className="rounded-[22px] p-4 sm:p-5" style={{ background: bg }}>
+      <p className="font-[family-name:var(--font-baloo)] text-lg font-extrabold sm:text-2xl" style={{ color }}>
         {value}
       </p>
       <p className="mt-1 text-xs font-semibold text-[var(--muted-strong)]">{label}</p>

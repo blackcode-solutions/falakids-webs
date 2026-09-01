@@ -1,4 +1,31 @@
+"use client";
+
+import { useState } from "react";
 import ParentSidebar from "@/components/ParentSidebar";
+import Logo from "@/components/Logo";
+import { MenuIcon } from "@/components/icons";
+
 export default function ParentLayout({ children }: { children: React.ReactNode }) {
-  return <div className="flex min-h-screen"><ParentSidebar /><main className="min-w-0 flex-1">{children}</main></div>;
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="flex min-h-screen">
+      <ParentSidebar open={open} onClose={() => setOpen(false)} />
+
+      <div className="min-w-0 flex-1">
+        <div className="sticky top-0 z-30 flex items-center gap-3 border-b border-[var(--panel-border)] bg-[var(--background)]/95 px-4 py-3 backdrop-blur lg:hidden">
+          <button
+            onClick={() => setOpen(true)}
+            aria-label="Abrir menu"
+            className="focus-ring flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[var(--foreground)] hover:bg-[#EDEFF8]"
+          >
+            <MenuIcon className="h-5 w-5" />
+          </button>
+          <Logo />
+        </div>
+
+        <main className="min-w-0">{children}</main>
+      </div>
+    </div>
+  );
 }

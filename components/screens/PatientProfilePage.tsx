@@ -16,7 +16,7 @@ export default async function PatientProfilePage({
     <div className="pb-10">
       <Topbar title="Perfil do Paciente" backHref="/patients" />
 
-      <div className="grid grid-cols-1 gap-6 px-8 lg:grid-cols-[280px_1fr]">
+      <div className="grid grid-cols-1 gap-6 px-4 sm:px-6 lg:px-8 lg:grid-cols-[280px_1fr]">
         <div className="card flex flex-col items-center p-6 text-center">
           <div
             className="flex h-24 w-24 items-center justify-center rounded-full text-2xl font-bold"

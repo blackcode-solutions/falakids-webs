@@ -31,7 +31,7 @@ export default function LoginPage() {
   return (
     <div className="grid min-h-screen grid-cols-1 lg:grid-cols-2 bg-white">
       {/* Left: form */}
-      <div className="flex flex-col justify-center px-8 py-12 sm:px-16 lg:px-20 bg-white">
+      <div className="flex flex-col justify-center px-6 py-10 sm:px-16 lg:px-20 bg-white">
         <div className="mx-auto w-full max-w-md">
           {/* Logo */}
           <div className="mb-8 flex justify-center lg:justify-start">
@@ -45,7 +45,7 @@ export default function LoginPage() {
             />
           </div>
 
-          <h1 className="font-[family-name:var(--font-baloo)] text-4xl font-extrabold text-[#0476D9] text-center lg:text-left">
+          <h1 className="font-[family-name:var(--font-baloo)] text-3xl font-extrabold text-[#0476D9] text-center sm:text-4xl lg:text-left">
             Que bom te ver! 👋
           </h1>
           <p className="mt-3 text-base text-gray-500 text-center lg:text-left">
@@ -101,7 +101,7 @@ export default function LoginPage() {
               />
             </label>
 
-            <div className="flex items-center justify-between text-sm">
+            <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
               <label className="flex items-center gap-2 text-gray-500">
                 <input 
                   type="checkbox" 

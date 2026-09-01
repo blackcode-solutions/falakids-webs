@@ -127,6 +127,12 @@ export const PlusIcon = ({ className }: IconProps) => (
   </svg>
 );
 
+export const MenuIcon = ({ className }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <path d="M3.5 6.5h17M3.5 12h17M3.5 17.5h17" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+  </svg>
+);
+
 export const XIcon = ({ className }: IconProps) => (
   <svg viewBox="0 0 24 24" fill="none" className={className}>
     <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />

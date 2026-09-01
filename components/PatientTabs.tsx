@@ -18,7 +18,7 @@ export default function PatientTabs({ patient }: { patient: Patient }) {
   const [tab, setTab] = useState<Tab>("Geral");
 
   return (
-    <div className="card p-6">
+    <div className="card p-4 sm:p-6">
       <div className="mb-6 flex gap-1 overflow-x-auto border-b border-[var(--panel-border)] pb-0">
         {TABS.map((t) => (
           <button
