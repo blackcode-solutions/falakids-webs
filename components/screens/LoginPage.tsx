@@ -3,8 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { Eye, EyeOff } from "lucide-react";
 
 type Role = "fono" | "responsavel";
+
+const MOCK_PASSWORD = "12345678";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -12,7 +15,8 @@ export default function LoginPage() {
   const [email, setEmail] = useState(
     role === "fono" ? "amanda@falakids.com" : "juliana.silva@email.com"
   );
-  const [password, setPassword] = useState("••••••••");
+  const [password, setPassword] = useState(MOCK_PASSWORD);
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   function handleRoleChange(next: Role) {
@@ -29,12 +33,12 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="grid min-h-screen grid-cols-1 lg:grid-cols-2 bg-white">
+    <div className="grid h-dvh max-h-dvh grid-cols-1 overflow-hidden bg-white lg:grid-cols-[2fr_3fr]">
       {/* Left: form */}
-      <div className="flex flex-col justify-center px-6 py-10 sm:px-16 lg:px-20 bg-white">
-        <div className="mx-auto w-full max-w-md">
+      <div className="flex h-full flex-col justify-center overflow-hidden bg-white px-6 py-6 sm:px-10 lg:px-12">
+        <div className="mx-auto w-full max-w-sm">
           {/* Logo */}
-          <div className="mb-8 flex justify-center lg:justify-start">
+          <div className="mb-5 flex justify-center lg:justify-start">
             <Image
               src="/logo-falakids.png"
               alt="FalaKids"
@@ -46,21 +50,21 @@ export default function LoginPage() {
           </div>
 
           <h1 className="font-[family-name:var(--font-baloo)] text-3xl font-extrabold text-[#0476D9] text-center sm:text-4xl lg:text-left">
-            Que bom te ver! 👋
+            Que bom te ver! 
           </h1>
           <p className="mt-3 text-base text-gray-500 text-center lg:text-left">
             Entre para acompanhar o progresso das crianças.
           </p>
 
           {/* Toggle de Perfil - Cores da paleta */}
-          <div className="mt-8 flex rounded-full bg-[#F2F4F8] p-1.5 border border-gray-200">
+          <div className="mt-6 flex rounded-full bg-[#F2F4F8] p-1.5 border border-gray-200">
             <button
               type="button"
               onClick={() => handleRoleChange("fono")}
               className={`flex-1 rounded-full py-2.5 text-sm font-bold transition-all duration-300 ${
                 role === "fono"
-                  ? "bg-[#7155D9] text-white shadow-lg shadow-purple-200"
-                  : "text-[#64748B] hover:text-[#7155D9]"
+                  ? "bg-[#0476D9] text-white shadow-lg shadow-blue-200"
+                  : "text-[#64748B] hover:text-[#0476D9]"
               }`}
             >
                Sou Fono
@@ -78,7 +82,7 @@ export default function LoginPage() {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5">
+          <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
             <label className="flex flex-col gap-2 text-sm font-semibold text-[#0476D9]">
               E-mail
               <input
@@ -90,16 +94,33 @@ export default function LoginPage() {
               />
             </label>
 
-            <label className="flex flex-col gap-2 text-sm font-semibold text-[#0476D9]">
-              Senha
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="rounded-2xl border-2 border-gray-200 bg-white px-5 py-3.5 text-sm outline-none transition-all focus:border-[#0476D9] focus:ring-4 focus:ring-blue-50"
-                placeholder="Digite sua senha"
-              />
-            </label>
+            <div className="flex flex-col gap-2 text-sm font-semibold text-[#0476D9]">
+              <label htmlFor="password">Senha</label>
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full rounded-2xl border-2 border-gray-200 bg-white px-5 py-3.5 pr-12 text-sm outline-none transition-all focus:border-[#0476D9] focus:ring-4 focus:ring-blue-50"
+                  placeholder="Digite sua senha"
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-[#0476D9]"
+                  aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                  aria-pressed={showPassword}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
+            </div>
 
             <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
               <label className="flex items-center gap-2 text-gray-500">
@@ -118,13 +139,13 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-4 rounded-2xl bg-gradient-to-r from-[#0476D9] to-[#7155D9] py-4 text-base font-bold text-white shadow-xl shadow-blue-100 transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60"
+              className="mt-2 rounded-2xl bg-[#0476D9] py-3.5 text-base font-bold text-white shadow-lg shadow-blue-200 transition-colors hover:bg-[#0368c4] active:bg-[#025eb3] disabled:opacity-60"
             >
               {loading ? "Entrando..." : "Entrar "}
             </button>
           </form>
 
-          <p className="mt-8 text-center text-sm text-gray-500">
+          <p className="mt-5 text-center text-sm text-gray-500">
             Ainda não tem conta?{" "}
             <a href="#" className="font-bold text-[#F24F13] hover:underline">
               Fale com a gente
@@ -133,32 +154,24 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Right: illustration com Papagaio (fundo branco removido) */}
-      <div className="relative hidden overflow-hidden bg-gradient-to-br from-[#0476D9] via-[#7155D9] to-[#F24F13] lg:flex lg:flex-col lg:items-center lg:justify-center">
-        {/* Elementos decorativos coloridos */}
-        <div className="absolute top-10 left-10 h-28 w-28 rounded-full bg-[#F2A516]/40 animate-pulse" />
-        <div className="absolute bottom-20 right-10 h-36 w-36 rounded-full bg-[#69A62D]/40 animate-bounce" />
-        <div className="absolute top-1/3 right-0 h-20 w-20 rounded-full bg-[#F24F13]/40" />
-        <div className="absolute bottom-10 left-10 h-16 w-16 rounded-full bg-[#0476D9]/40" />
-
-        <div className="relative z-10 flex flex-col items-center px-10 text-center text-white">
-          {/* Papagaio 3D - mix-blend-multiply remove o fundo branco */}
-          <div className="mb-8 relative">
-            <div className="absolute inset-0 bg-white/20 blur-3xl rounded-full scale-110" />
+      {/* Right: logo e mensagem de boas-vindas */}
+      <div className="relative hidden h-full overflow-hidden bg-[#F2F4F8] lg:flex lg:flex-col lg:items-center lg:justify-center">
+        <div className="relative z-10 flex w-full max-w-2xl flex-col items-center px-12 text-center xl:px-16">
+          <div className="mb-8 w-full">
             <Image
-              src="/papagaio-3d.png"
-              alt="Papagaio FalaKids"
-              width={300}
-              height={300}
+              src="/logo-fala-kids-hero.png"
+              alt="FalaKids"
+              width={520}
+              height={260}
               priority
-              className="relative drop-shadow-2xl mix-blend-multiply"
+              className="relative mx-auto h-auto w-full max-w-[520px] object-contain drop-shadow-lg"
             />
           </div>
 
-          <h2 className="font-[family-name:var(--font-baloo)] text-4xl font-extrabold text-white drop-shadow-md">
-            Terapia de fala que vira brincadeira
+          <h2 className="font-[family-name:var(--font-baloo)] text-4xl font-extrabold text-[#0476D9]">
+            Terapia da fala 
           </h2>
-          <p className="mt-4 max-w-md text-base text-white/90">
+          <p className="mt-4 max-w-md text-base text-gray-500">
             Acompanhe sessões, envie tarefas para casa e celebre cada
             conquista das crianças com o FalaKids.
           </p>
