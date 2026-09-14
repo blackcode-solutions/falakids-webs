@@ -5,8 +5,11 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { ApiError, getClinicMe, signIn } from "@/lib/api";
+import { Eye, EyeOff } from "lucide-react";
 
 type Role = "fono" | "responsavel";
+
+const MOCK_PASSWORD = "12345678";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -77,7 +80,7 @@ export default function LoginPage() {
           </div>
 
           <h1 className="font-[family-name:var(--font-baloo)] text-3xl font-extrabold text-[#0476D9] text-center sm:text-4xl lg:text-left">
-            Que bom te ver! 👋
+            Que bom te ver! 
           </h1>
           <p className="mt-3 text-base text-gray-500 text-center lg:text-left">
             Entre para acompanhar o progresso das crianças.
@@ -89,8 +92,8 @@ export default function LoginPage() {
               onClick={() => setRole("fono")}
               className={`flex-1 rounded-full py-2.5 text-sm font-bold transition-all duration-300 ${
                 role === "fono"
-                  ? "bg-[#7155D9] text-white shadow-lg shadow-purple-200"
-                  : "text-[#64748B] hover:text-[#7155D9]"
+                  ? "bg-[#0476D9] text-white shadow-lg shadow-blue-200"
+                  : "text-[#64748B] hover:text-[#0476D9]"
               }`}
             >
                Sou Fono
@@ -108,7 +111,7 @@ export default function LoginPage() {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5">
+          <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
             <label className="flex flex-col gap-2 text-sm font-semibold text-[#0476D9]">
               E-mail
               <input
@@ -148,13 +151,13 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-4 rounded-2xl bg-gradient-to-r from-[#0476D9] to-[#7155D9] py-4 text-base font-bold text-white shadow-xl shadow-blue-100 transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60"
+              className="mt-2 rounded-2xl bg-[#0476D9] py-3.5 text-base font-bold text-white shadow-lg shadow-blue-200 transition-colors hover:bg-[#0368c4] active:bg-[#025eb3] disabled:opacity-60"
             >
               {loading ? "Entrando..." : "Entrar "}
             </button>
           </form>
 
-          <p className="mt-8 text-center text-sm text-gray-500">
+          <p className="mt-5 text-center text-sm text-gray-500">
             Ainda não tem conta?{" "}
             <Link href="/signup" className="font-bold text-[#F24F13] hover:underline">
               Cadastre sua clínica
@@ -173,20 +176,21 @@ export default function LoginPage() {
           <div className="mb-8 relative">
             <div className="absolute inset-0 bg-white/20 blur-3xl rounded-full scale-110" />
             <Image
-              src="/papagaio-3d.png"
-              alt="Papagaio FalaKids"
-              width={300}
-              height={300}
+              src="/logo-fala-kids-hero.png"
+              alt="FalaKids"
+              width={520}
+              height={260}
               priority
-              className="relative drop-shadow-2xl mix-blend-multiply"
+              className="relative mx-auto h-auto w-full max-w-[520px] object-contain drop-shadow-lg"
             />
           </div>
 
-          <h2 className="font-[family-name:var(--font-baloo)] text-4xl font-extrabold text-white drop-shadow-md">
-            Terapia de fala que vira brincadeira
+          <h2 className="font-[family-name:var(--font-baloo)] text-4xl font-extrabold text-[#0476D9]">
+            Terapia da fala 
           </h2>
-          <p className="mt-4 max-w-md text-base text-white/90">
-            Acompanhe sessões, envie tarefas para casa e celebre cada conquista das crianças com o FalaKids.
+          <p className="mt-4 max-w-md text-base text-gray-500">
+            Acompanhe sessões, envie tarefas para casa e celebre cada
+            conquista das crianças com o FalaKids.
           </p>
         </div>
       </div>
