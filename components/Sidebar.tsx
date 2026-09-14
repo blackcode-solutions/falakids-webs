@@ -15,7 +15,7 @@ import {
   SettingsIcon,
   XIcon,
 } from "./icons";
-import { clinicName, clinicRole } from "@/lib/data";
+import { useClinicMe } from "@/lib/useClinicMe";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard", icon: DashboardIcon },
@@ -36,6 +36,12 @@ type SidebarProps = {
 
 export default function Sidebar({ open = false, onClose }: SidebarProps) {
   const pathname = usePathname();
+  // redirect: false — Sidebar renders on every clinic page, so it shouldn't
+  // be the one deciding to bounce an unauthenticated visitor to /login;
+  // each page's own data fetch already handles that.
+  const clinicState = useClinicMe({ redirect: false });
+  const clinicName = clinicState.status === "ready" ? clinicState.therapist.clinicName : "Minha clínica";
+  const clinicRole = clinicState.status === "ready" ? clinicState.therapist.specialty ?? "Fonoaudiologia" : "";
 
   return (
     <>

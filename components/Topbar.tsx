@@ -4,7 +4,7 @@ import { BellIcon, ChevronLeftIcon, SearchIcon } from "./icons";
 type TopbarProps = {
   title: string;
   backHref?: string;
-  search?: { placeholder: string };
+  search?: { placeholder: string; value?: string; onChange?: (value: string) => void };
   actions?: React.ReactNode;
 };
 
@@ -32,6 +32,8 @@ export default function Topbar({ title, backHref, search, actions }: TopbarProps
             <SearchIcon className="h-4 w-4" />
             <input
               placeholder={search.placeholder}
+              value={search.value}
+              onChange={(e) => search.onChange?.(e.target.value)}
               className="focus-ring w-48 bg-transparent outline-none placeholder:text-[var(--muted)]"
             />
           </div>
