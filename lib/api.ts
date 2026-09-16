@@ -36,7 +36,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return body as T;
 }
 
-// ---- Auth (Better Auth endpoints, mounted at /auth/*) ----
+// ---- Auth (Better Auth endpoints, mounted at /api/auth/*) ----
 
 export interface AuthUser {
   id: string;
@@ -47,25 +47,25 @@ export interface AuthUser {
 }
 
 export function signUp(input: { name: string; email: string; password: string }) {
-  return request<{ user?: AuthUser }>("/auth/sign-up/email", {
+  return request<{ user?: AuthUser }>("/api/auth/sign-up/email", {
     method: "POST",
     body: JSON.stringify(input),
   });
 }
 
 export function signIn(input: { email: string; password: string }) {
-  return request<{ user?: AuthUser; token?: string }>("/auth/sign-in/email", {
+  return request<{ user?: AuthUser; token?: string }>("/api/auth/sign-in/email", {
     method: "POST",
     body: JSON.stringify(input),
   });
 }
 
 export function signOut() {
-  return request<void>("/auth/sign-out", { method: "POST" });
+  return request<void>("/api/auth/sign-out", { method: "POST" });
 }
 
 export function getMe() {
-  return request<{ user: AuthUser }>("/me");
+  return request<{ user: AuthUser }>("/api/me");
 }
 
 // ---- Clinic (therapist) ----
@@ -80,12 +80,12 @@ export interface TherapistProfile {
 }
 
 export function getClinicMe() {
-  return request<{ therapist: TherapistProfile }>("/clinic/me");
+  return request<{ therapist: TherapistProfile }>("/api/clinic/me");
 }
 
 export function registerClinic(input: { clinicName: string; specialty?: string; phone?: string }) {
   return request<{ therapist: { clinicName: string; specialty: string | null; phone: string | null } }>(
-    "/clinic/register",
+    "/api/clinic/register",
     { method: "POST", body: JSON.stringify(input) },
   );
 }
@@ -112,7 +112,7 @@ export interface ClinicPatient {
 }
 
 export function listPatients() {
-  return request<{ patients: ClinicPatient[] }>("/clinic/patients");
+  return request<{ patients: ClinicPatient[] }>("/api/clinic/patients");
 }
 
 export interface CreatePatientInput {
@@ -130,7 +130,7 @@ export interface CreatePatientInput {
 }
 
 export function createPatient(input: CreatePatientInput) {
-  return request<{ patient: ClinicPatient }>("/clinic/patients", {
+  return request<{ patient: ClinicPatient }>("/api/clinic/patients", {
     method: "POST",
     body: JSON.stringify(input),
   });
@@ -160,26 +160,26 @@ export interface PatientSessionSummary {
 
 export function getPatient(id: string) {
   return request<{ patient: ClinicPatient; assignments: PatientAssignment[]; recentSessions: PatientSessionSummary[] }>(
-    `/clinic/patients/${id}`,
+    `/api/clinic/patients/${id}`,
   );
 }
 
 export function updatePatient(id: string, input: Partial<CreatePatientInput>) {
-  return request<{ patient: ClinicPatient }>(`/clinic/patients/${id}`, {
+  return request<{ patient: ClinicPatient }>(`/api/clinic/patients/${id}`, {
     method: "PATCH",
     body: JSON.stringify(input),
   });
 }
 
 export function createPatientInvite(id: string, expiresInHours = 72) {
-  return request<{ invite: { code: string; expiresAt: string } }>(`/clinic/patients/${id}/invite`, {
+  return request<{ invite: { code: string; expiresAt: string } }>(`/api/clinic/patients/${id}/invite`, {
     method: "POST",
     body: JSON.stringify({ expiresInHours }),
   });
 }
 
 export function createGenericInvite(expiresInHours = 72) {
-  return request<{ invite: { code: string; expiresAt: string } }>("/clinic/invites", {
+  return request<{ invite: { code: string; expiresAt: string } }>("/api/clinic/invites", {
     method: "POST",
     body: JSON.stringify({ expiresInHours }),
   });
@@ -189,14 +189,14 @@ export function createAssignment(
   patientId: string,
   input: { title: string; notes?: string; contentItemIds?: string[]; dueDate?: string },
 ) {
-  return request<{ assignment: PatientAssignment }>(`/clinic/patients/${patientId}/assignments`, {
+  return request<{ assignment: PatientAssignment }>(`/api/clinic/patients/${patientId}/assignments`, {
     method: "POST",
     body: JSON.stringify(input),
   });
 }
 
 export function deleteAssignment(patientId: string, assignmentId: string) {
-  return request<void>(`/clinic/patients/${patientId}/assignments/${assignmentId}`, {
+  return request<void>(`/api/clinic/patients/${patientId}/assignments/${assignmentId}`, {
     method: "DELETE",
   });
 }
