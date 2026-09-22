@@ -200,3 +200,154 @@ export function deleteAssignment(patientId: string, assignmentId: string) {
     method: "DELETE",
   });
 }
+
+export interface GlobalAssignment extends PatientAssignment {
+  patientName: string;
+}
+
+export function listAllAssignments(status?: "PENDING" | "COMPLETED") {
+  const qs = status ? `?status=${status}` : "";
+  return request<{ assignments: GlobalAssignment[] }>(`/api/clinic/assignments${qs}`);
+}
+
+// ---- Content library (used by the session builder) ----
+
+export type ContentCategory =
+  | "ANIMALS"
+  | "COLORS"
+  | "FRUITS"
+  | "FAMILY"
+  | "HOUSE"
+  | "NUMBERS"
+  | "BODY"
+  | "VEHICLES"
+  | "NATURE"
+  | "EMOTIONS"
+  | "TRANSPORTS"
+  | "FOOD"
+  | "ALFABET";
+
+export interface ContentItem {
+  id: string;
+  category: ContentCategory;
+  slug: string;
+  labelPT: string;
+  labelEN: string;
+  soundPT: string;
+  soundEN: string;
+  imageUrl?: string;
+  mouthVideoUrl?: string;
+  onomatopoeia?: string;
+  difficultyLevel: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+  updatedAt?: string;
+}
+
+export function listContent(category?: ContentCategory) {
+  const qs = category ? `?category=${category}` : "";
+  return request<{ contents: ContentItem[] }>(`/api/content${qs}`);
+}
+
+// ---- Dashboard ----
+
+export interface DashboardStats {
+  activePatients: number;
+  pendingTasks: number;
+  completedActivities: number;
+  weeklyEngagement: number;
+  weekProgress: { day: string; value: number }[];
+}
+
+export interface RecentSessionSummary {
+  id: string;
+  childId: string;
+  childName: string;
+  finishedAt: string;
+  wordsAttempted: number;
+  wordsCompleted: number;
+}
+
+export function getDashboardStats() {
+  return request<{ stats: DashboardStats; recentSessions: RecentSessionSummary[] }>("/api/clinic/dashboard");
+}
+
+// ---- Messages ----
+
+export interface Message {
+  id: string;
+  patientLinkId: string;
+  senderRole: "THERAPIST" | "PARENT";
+  body: string;
+  readAt?: string;
+  createdAt: string;
+}
+
+export interface Conversation {
+  patientLinkId: string;
+  childId: string;
+  childName: string;
+  lastMessage?: Message;
+  unreadCount: number;
+}
+
+export function getConversations() {
+  return request<{ conversations: Conversation[] }>("/api/clinic/conversations");
+}
+
+export function getPatientMessages(patientId: string, opts?: { before?: string; limit?: number }) {
+  const params = new URLSearchParams();
+  if (opts?.before) params.set("before", opts.before);
+  if (opts?.limit) params.set("limit", String(opts.limit));
+  const qs = params.toString() ? `?${params.toString()}` : "";
+  return request<{ messages: Message[] }>(`/api/clinic/patients/${patientId}/messages${qs}`);
+}
+
+export function sendPatientMessage(patientId: string, body: string) {
+  return request<{ message: Message }>(`/api/clinic/patients/${patientId}/messages`, {
+    method: "POST",
+    body: JSON.stringify({ body }),
+  });
+}
+
+export function markPatientMessagesRead(patientId: string) {
+  return request<void>(`/api/clinic/patients/${patientId}/messages/read`, { method: "POST" });
+}
+
+// ---- Messages & sessions (app/parent side — same API the mobile app and a
+// future parent web portal consume; not yet wired into any screen in this
+// Next.js project, since the parent-facing pages here (components/Parent*)
+// have no auth/child-selection wiring at all yet, unlike the clinic side) ----
+
+export interface ChildConversation {
+  patientLinkId: string;
+  therapistName: string;
+  clinicName?: string;
+  lastMessage?: Message;
+  unreadCount: number;
+}
+
+export function getChildConversations(childId: string) {
+  return request<{ conversations: ChildConversation[] }>(`/api/children/${childId}/conversations`);
+}
+
+export function getChildMessages(childId: string, opts?: { linkId?: string; before?: string; limit?: number }) {
+  const params = new URLSearchParams();
+  if (opts?.linkId) params.set("linkId", opts.linkId);
+  if (opts?.before) params.set("before", opts.before);
+  if (opts?.limit) params.set("limit", String(opts.limit));
+  const qs = params.toString() ? `?${params.toString()}` : "";
+  return request<{ patientLinkId: string; messages: Message[] }>(`/api/children/${childId}/messages${qs}`);
+}
+
+export function sendChildMessage(childId: string, body: string, linkId?: string) {
+  return request<{ message: Message }>(`/api/children/${childId}/messages`, {
+    method: "POST",
+    body: JSON.stringify({ body, linkId }),
+  });
+}
+
+export function markChildMessagesRead(childId: string, linkId?: string) {
+  return request<void>(`/api/children/${childId}/messages/read`, {
+    method: "POST",
+    body: JSON.stringify({ linkId }),
+  });
+}

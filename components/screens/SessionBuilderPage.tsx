@@ -1,42 +1,141 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Topbar from "@/components/Topbar";
 import Parrot from "@/components/Parrot";
 import KidAvatar from "@/components/KidAvatar";
-import { patients, sessionBuilderActivities, activities } from "@/lib/data";
 import { PlusIcon, XIcon, SearchIcon } from "@/components/icons";
+import {
+  ApiError,
+  listPatients,
+  listContent,
+  createAssignment,
+  type ClinicPatient,
+  type ContentItem,
+  type ContentCategory,
+} from "@/lib/api";
 
-type Chosen = { id: string; name: string; emoji: string };
+type Chosen = { id: string; name: string; category: ContentCategory };
+
+// The real content library is organized by theme (animals, colors...), not
+// by phoneme — see schema.ts's contentItem comment — so there's no "emoji"
+// field on a ContentItem. This is purely a client-side visual per category.
+const CATEGORY_EMOJI: Record<ContentCategory, string> = {
+  ANIMALS: "🐶",
+  COLORS: "🎨",
+  FRUITS: "🍎",
+  FAMILY: "👪",
+  HOUSE: "🏠",
+  NUMBERS: "🔢",
+  BODY: "🧑",
+  VEHICLES: "🚗",
+  NATURE: "🌳",
+  EMOTIONS: "😊",
+  TRANSPORTS: "🚌",
+  FOOD: "🍽️",
+  ALFABET: "🔤",
+};
 
 export default function SessionBuilderPage() {
-  const [patientId, setPatientId] = useState(patients[0].id);
+  const [patients, setPatients] = useState<ClinicPatient[] | null>(null);
+  const [content, setContent] = useState<ContentItem[] | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  const [patientId, setPatientId] = useState<string | null>(null);
   const [phoneme, setPhoneme] = useState("R");
   const [position, setPosition] = useState("Inicial");
   const [query, setQuery] = useState("");
-  const [chosen, setChosen] = useState<Chosen[]>(
-    sessionBuilderActivities.map((a) => ({ id: a.id, name: a.name, emoji: a.emoji }))
-  );
+  const [chosen, setChosen] = useState<Chosen[]>([]);
   const [completed, setCompleted] = useState(false);
   const [taskSent, setTaskSent] = useState<null | boolean>(null);
+  const [sendError, setSendError] = useState<string | null>(null);
+  const [sending, setSending] = useState(false);
 
-  const patient = patients.find((p) => p.id === patientId)!;
-  const available = activities.filter(
-    (a) => a.name.toLowerCase().includes(query.toLowerCase()) && !chosen.some((c) => c.id === a.id)
+  useEffect(() => {
+    Promise.all([listPatients(), listContent()])
+      .then(([patientsRes, contentRes]) => {
+        setPatients(patientsRes.patients);
+        setContent(contentRes.contents);
+        setPatientId((current) => current ?? patientsRes.patients[0]?.id ?? null);
+      })
+      .catch((err) => {
+        setLoadError(err instanceof ApiError ? err.message : "Não foi possível carregar pacientes e atividades.");
+      });
+  }, []);
+
+  const patient = patients?.find((p) => p.id === patientId) ?? null;
+  const available = useMemo(
+    () =>
+      (content ?? []).filter(
+        (a) => a.labelPT.toLowerCase().includes(query.toLowerCase()) && !chosen.some((c) => c.id === a.id),
+      ),
+    [content, query, chosen],
   );
 
   function addActivity(id: string) {
-    const a = activities.find((x) => x.id === id);
+    const a = content?.find((x) => x.id === id);
     if (!a) return;
-    setChosen((c) => [...c, { id: a.id, name: a.name, emoji: a.emoji }]);
+    setChosen((c) => [...c, { id: a.id, name: a.labelPT, category: a.category }]);
   }
 
   function removeActivity(id: string) {
     setChosen((c) => c.filter((x) => x.id !== id));
   }
 
-  if (completed) {
+  async function handleSendTask() {
+    if (!patientId) return;
+    setSending(true);
+    setSendError(null);
+    try {
+      await createAssignment(patientId, {
+        title: `Fonema ${phoneme} - ${position}`,
+        notes: `Sessão montada no Criador de Sessão (${chosen.length} atividade(s)).`,
+        contentItemIds: chosen.map((c) => c.id),
+      });
+      setTaskSent(true);
+    } catch (err) {
+      setSendError(err instanceof ApiError ? err.message : "Não foi possível enviar a tarefa. Tente novamente.");
+    } finally {
+      setSending(false);
+    }
+  }
+
+  if (loadError) {
+    return (
+      <div className="pb-10">
+        <Topbar title="Criador de Sessão" />
+        <p className="mx-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600 sm:mx-6 lg:mx-8">
+          {loadError}
+        </p>
+      </div>
+    );
+  }
+
+  if (!patients || !content || !patientId) {
+    return (
+      <div className="pb-10">
+        <Topbar title="Criador de Sessão" />
+        <p className="px-4 text-sm text-[var(--muted)] sm:px-6 lg:px-8">Carregando...</p>
+      </div>
+    );
+  }
+
+  if (patients.length === 0) {
+    return (
+      <div className="pb-10">
+        <Topbar title="Criador de Sessão" />
+        <div className="mx-4 rounded-2xl border border-dashed border-[var(--panel-border)] p-8 text-center sm:mx-6 lg:mx-8">
+          <p className="text-sm font-semibold">Você ainda não tem pacientes cadastrados.</p>
+          <Link href="/patients/new" className="mt-4 inline-block rounded-xl bg-[var(--brand-blue)] px-5 py-2.5 text-sm font-semibold text-white">
+            + Novo Paciente
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (completed && patient) {
     return (
       <div className="pb-10">
         <Topbar title="Tarefas" backHref="/sessions/new" />
@@ -69,22 +168,28 @@ export default function SessionBuilderPage() {
               </div>
             </div>
 
+            {sendError && (
+              <p className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">{sendError}</p>
+            )}
+
             {taskSent === null ? (
               <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <button
-                  onClick={() => setTaskSent(true)}
-                  className="focus-ring rounded-2xl border-2 border-[var(--brand-blue)] bg-[var(--wash-blue)] p-5 text-center transition-colors hover:brightness-95"
+                  onClick={handleSendTask}
+                  disabled={sending}
+                  className="focus-ring rounded-2xl border-2 border-[var(--brand-blue)] bg-[var(--wash-blue)] p-5 text-center transition-colors hover:brightness-95 disabled:opacity-60"
                 >
                   <p className="font-bold text-[var(--brand-blue-dark)]">Sim, enviar tarefa</p>
                   <p className="mt-1 text-xs font-medium text-[var(--muted)]">
                     Os responsáveis receberão no app do FalaKids
                   </p>
                   <span className="focus-ring btn-primary mt-4 w-full">
-                    Enviar tarefa
+                    {sending ? "Enviando..." : "Enviar tarefa"}
                   </span>
                 </button>
                 <button
                   onClick={() => setTaskSent(false)}
+                  disabled={sending}
                   className="focus-ring rounded-2xl border border-[var(--panel-border)] p-5 text-center hover:bg-[#F7F8FD]"
                 >
                   <p className="font-bold">Não enviar agora</p>
@@ -112,14 +217,7 @@ export default function SessionBuilderPage() {
 
   return (
     <div className="pb-10">
-      <Topbar
-        title="Criador de Sessão"
-        actions={
-          <button className="focus-ring text-sm font-bold text-[var(--brand-blue)] hover:underline">
-            Salvar como rascunho
-          </button>
-        }
-      />
+      <Topbar title="Criador de Sessão" />
 
       <div className="grid grid-cols-1 gap-6 px-4 sm:px-6 lg:px-8 lg:grid-cols-3">
         <section className="card p-5">
@@ -136,13 +234,17 @@ export default function SessionBuilderPage() {
             ))}
           </select>
 
-          <div className="mt-4 flex items-center gap-3 rounded-xl bg-[#F7F8FD] p-3">
-            <KidAvatar seed={patient.id} className="h-10 w-10" />
-            <div>
-              <p className="text-sm font-bold">{patient.name}</p>
-              <p className="text-xs font-medium text-[var(--muted)]">{patient.age} anos &middot; {patient.condition}</p>
+          {patient && (
+            <div className="mt-4 flex items-center gap-3 rounded-xl bg-[#F7F8FD] p-3">
+              <KidAvatar seed={patient.id} className="h-10 w-10" />
+              <div>
+                <p className="text-sm font-bold">{patient.name}</p>
+                <p className="text-xs font-medium text-[var(--muted)]">
+                  {patient.age} anos {patient.diagnosis ? `· ${patient.diagnosis}` : ""}
+                </p>
+              </div>
             </div>
-          </div>
+          )}
         </section>
 
         <section className="card p-5">
@@ -193,20 +295,17 @@ export default function SessionBuilderPage() {
                 className="flex items-center justify-between rounded-xl border border-[var(--panel-border)] px-3 py-2"
               >
                 <div className="flex items-center gap-2.5">
-                  <span
-                    className="flex h-8 w-8 items-center justify-center rounded-lg text-base"
-                    style={{ background: a.bg }}
-                  >
-                    {a.emoji}
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#F2F4FB] text-base">
+                    {CATEGORY_EMOJI[a.category] ?? "🗣️"}
                   </span>
                   <div>
-                    <p className="text-sm font-medium">{a.name}</p>
-                    <p className="text-xs text-[var(--muted)]">/{a.phoneme}/ inicial</p>
+                    <p className="text-sm font-medium">{a.labelPT}</p>
+                    <p className="text-xs text-[var(--muted)]">{a.category.toLowerCase()}</p>
                   </div>
                 </div>
                 <button
                   onClick={() => addActivity(a.id)}
-                  aria-label={`Adicionar ${a.name}`}
+                  aria-label={`Adicionar ${a.labelPT}`}
                   className="focus-ring flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[var(--brand-blue)] text-white shadow-sm hover:brightness-105"
                 >
                   <PlusIcon className="h-4 w-4" />
@@ -221,7 +320,7 @@ export default function SessionBuilderPage() {
 
         <section className="card flex flex-col p-5">
           <StepHeader n={3} title="Minha Sessão" />
-          <p className="mt-1 text-xs text-[var(--muted)]">Arraste para reordenar</p>
+          <p className="mt-1 text-xs text-[var(--muted)]">Ordem em que as atividades aparecem para a criança</p>
 
           <div className="mt-3 flex flex-1 flex-col gap-2">
             {chosen.map((c, i) => (
@@ -232,7 +331,9 @@ export default function SessionBuilderPage() {
                 <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--brand-blue)] text-xs font-bold text-white">
                   {i + 1}
                 </span>
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F2F4FB] text-lg">{c.emoji}</span>
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F2F4FB] text-lg">
+                  {CATEGORY_EMOJI[c.category] ?? "🗣️"}
+                </span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-bold">{c.name}</p>
                   <p className="text-xs font-medium text-[var(--muted)]">/{phoneme}/ {position.toLowerCase()}</p>
