@@ -142,11 +142,33 @@ export interface PatientAssignment {
   title: string;
   notes?: string;
   contentItemIds: string[];
+  items: AssignmentItem[];
   dueDate?: string;
   status: "PENDING" | "COMPLETED";
   completedAt?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+// The two practice modes a content item can be assigned/practiced under —
+// see the API's shared/enums.ts `exerciseTypeSchema` for the source of
+// truth. "REPETITION" = repetição (the child hears/reads the word and
+// repeats it); "NAMING" = nomeação (the child only sees the image and names
+// it, using the category's naming-prompt question).
+export type ExerciseType = "REPETITION" | "NAMING";
+
+export interface AssignmentItem {
+  contentItemId: string;
+  exerciseType: ExerciseType;
+}
+
+// Assignments created before `items` existed come back with `items: []`
+// (the API always returns the field, just empty) — this treats every id in
+// `contentItemIds` as "REPETITION" in that case, so older data still
+// displays sensibly instead of showing an empty exercise list.
+export function assignmentItemsOrFallback(assignment: PatientAssignment): AssignmentItem[] {
+  if (assignment.items.length > 0) return assignment.items;
+  return assignment.contentItemIds.map((contentItemId) => ({ contentItemId, exerciseType: "REPETITION" as const }));
 }
 
 export interface PatientSessionSummary {
@@ -187,7 +209,7 @@ export function createGenericInvite(expiresInHours = 72) {
 
 export function createAssignment(
   patientId: string,
-  input: { title: string; notes?: string; contentItemIds?: string[]; dueDate?: string },
+  input: { title: string; notes?: string; contentItemIds?: string[]; items?: AssignmentItem[]; dueDate?: string },
 ) {
   return request<{ assignment: PatientAssignment }>(`/api/clinic/patients/${patientId}/assignments`, {
     method: "POST",
@@ -247,6 +269,18 @@ export function listContent(category?: ContentCategory) {
   return request<{ contents: ContentItem[] }>(`/api/content${qs}`);
 }
 
+// ---- Naming-prompt audio (per category "Que X é esse?" question, used by
+// the NAMING exercise mode — see ExerciseType in this file) ----
+
+export interface NamingPromptAudio {
+  category: ContentCategory;
+  audioUrl?: string;
+}
+
+export function listNamingPrompts() {
+  return request<{ prompts: NamingPromptAudio[] }>("/api/naming-prompts");
+}
+
 // ---- Dashboard ----
 
 export interface DashboardStats {
@@ -268,6 +302,51 @@ export interface RecentSessionSummary {
 
 export function getDashboardStats() {
   return request<{ stats: DashboardStats; recentSessions: RecentSessionSummary[] }>("/api/clinic/dashboard");
+}
+
+// ---- Reports (Evolução e Relatórios) ----
+
+export interface MonthlyEvolutionPoint {
+  month: string;
+  value: number;
+}
+
+export interface PatientReportSummary {
+  childId: string;
+  name: string;
+  totalSessions: number;
+  accuracyPct: number;
+  totalDurationSecs: number;
+  lastSessionAt?: string;
+}
+
+export interface ClinicReport {
+  activePatients: number;
+  totalSessions: number;
+  totalWordsAttempted: number;
+  totalWordsCompleted: number;
+  accuracyPct: number;
+  totalDurationSecs: number;
+  monthlyEvolution: MonthlyEvolutionPoint[];
+  perPatient: PatientReportSummary[];
+}
+
+export interface PatientReport {
+  childId: string;
+  totalSessions: number;
+  totalWordsAttempted: number;
+  totalWordsCompleted: number;
+  accuracyPct: number;
+  totalDurationSecs: number;
+  monthlyEvolution: MonthlyEvolutionPoint[];
+}
+
+export function getClinicReport(months = 6) {
+  return request<{ report: ClinicReport }>(`/api/clinic/reports?months=${months}`);
+}
+
+export function getPatientReport(patientId: string, months = 6) {
+  return request<{ report: PatientReport }>(`/api/clinic/patients/${patientId}/report?months=${months}`);
 }
 
 // ---- Messages ----

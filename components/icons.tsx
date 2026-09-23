@@ -222,3 +222,55 @@ export const ShoppingBagIcon = ({ className }: IconProps) => (
     <path d="M9 8V6a3 3 0 0 1 6 0v2" stroke="currentColor" strokeWidth="1.8" />
   </svg>
 );
+
+export const PlayIcon = ({ className }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <path d="M7 5.5v13l11-6.5-11-6.5Z" fill="currentColor" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
+  </svg>
+);
+
+export const PauseIcon = ({ className }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <rect x="6.5" y="5" width="4" height="14" rx="1" fill="currentColor" />
+    <rect x="13.5" y="5" width="4" height="14" rx="1" fill="currentColor" />
+  </svg>
+);
+
+export const ImageIcon = ({ className }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <rect x="3.5" y="4.5" width="17" height="15" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
+    <circle cx="9" cy="10" r="1.8" stroke="currentColor" strokeWidth="1.6" />
+    <path d="M4.5 17.5 9.5 13l3 2.8 3-3.3 4 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+export const RepeatIcon = ({ className }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <path d="M4 12a8 8 0 0 1 13.6-5.7L20 8.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M20 4.5v4h-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M20 12a8 8 0 0 1-13.6 5.7L4 15.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M4 19.5v-4h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+export const TagIcon = ({ className }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <path d="M11.5 3.5H5a1.5 1.5 0 0 0-1.5 1.5v6.5c0 .4.16.78.44 1.06l8.5 8.5c.58.58 1.53.58 2.12 0l6.5-6.5c.58-.58.58-1.53 0-2.12l-8.5-8.5a1.5 1.5 0 0 0-1.06-.44Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+    <circle cx="8" cy="8" r="1.4" stroke="currentColor" strokeWidth="1.6" />
+  </svg>
+);
+
+export const BuildingIcon = ({ className }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <rect x="4" y="3.5" width="10" height="17" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
+    <rect x="14" y="9" width="6" height="11.5" rx="1.5" stroke="currentColor" strokeWidth="1.8" />
+    <path d="M7 7h1.5M7 10.5h1.5M7 14h1.5M10.5 7H12M10.5 10.5H12M10.5 14H12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+  </svg>
+);
+
+export const VideoIcon = ({ className }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <rect x="3" y="6" width="13" height="12" rx="2" stroke="currentColor" strokeWidth="1.8" />
+    <path d="M16 10.2 21 7.5v9l-5-2.7Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+  </svg>
+);

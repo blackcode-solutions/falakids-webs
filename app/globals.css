@@ -7,13 +7,24 @@
   --brand-purple: #7C5CFC;
   --brand-purple-dark: #5B3FE0;
   --brand-blue: #4F6EF7;
+  --brand-blue-dark: #3852D6;
   --brand-pink: #FF6FA5;
+  --brand-pink-dark: #E14D82;
   --brand-orange: #FFA53E;
+  --brand-orange-dark: #DB841E;
   --brand-green: #2ECC8F;
+  --brand-green-dark: #17A874;
+
+  --wash-blue: #EAF0FF;
+  --wash-purple: #F1ECFF;
+  --wash-pink: #FFEAF1;
+  --wash-orange: #FFF1DE;
+  --wash-green: #E4FAF1;
 
   --panel: #FFFFFF;
   --panel-border: #ECEFF7;
   --muted: #8A8FA8;
+  --muted-strong: #5B6079;
   --sidebar-bg: #FFFFFF;
 }
 
@@ -64,4 +75,76 @@ body {
 .focus-ring:focus-visible {
   outline: 2px solid var(--brand-purple);
   outline-offset: 2px;
+}
+
+.btn-primary,
+.btn-outline,
+.btn-accent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 12px;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: filter 0.15s ease, background-color 0.15s ease;
+}
+
+.btn-primary {
+  background: var(--brand-blue);
+  color: #fff;
+}
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.btn-accent {
+  background: var(--brand-green);
+  color: #fff;
+}
+.btn-accent:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.btn-outline {
+  background: #fff;
+  border: 1px solid var(--panel-border);
+  color: var(--foreground);
+}
+.btn-outline:hover:not(:disabled) {
+  background: #F7F8FD;
+}
+
+.btn-primary:disabled,
+.btn-outline:disabled,
+.btn-accent:disabled {
+  cursor: not-allowed;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.badge-blue {
+  background: var(--wash-blue);
+  color: var(--brand-blue-dark);
+}
+.badge-green {
+  background: var(--wash-green);
+  color: var(--brand-green-dark);
+}
+.badge-orange {
+  background: var(--wash-orange);
+  color: var(--brand-orange-dark);
+}
+.badge-purple {
+  background: var(--wash-purple);
+  color: var(--brand-purple-dark);
 }
